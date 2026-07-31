@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { connectDB } from '../config/database';
+import movieRoutes from './routes/movie.routes';
 
 const app = express();
 const port = Bun.env.PORT || 5000;
@@ -18,6 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     res.send('API Working 🚀');
 });
+
+// API Routes
+app.use('/api/v1/movies', movieRoutes);
 
 // Start Server
 app.listen(port, () => {
