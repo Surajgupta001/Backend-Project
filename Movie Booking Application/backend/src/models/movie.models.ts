@@ -23,7 +23,7 @@ const movieSchema = new Schema<MovieProps>({
         default: "English"
     },
     releaseDate: {
-        type: String,
+        type: Date,
         required: true
     },
     director: {
@@ -32,9 +32,10 @@ const movieSchema = new Schema<MovieProps>({
     },
     releaseStatus: {
         type: String,
+        enum: ["UPCOMING", "RELEASED", "ENDED"],
+        default: "RELEASED",
         required: true,
-        default: "RELEASED"
-    }
+    },
 }, {
     timestamps: true,
 });

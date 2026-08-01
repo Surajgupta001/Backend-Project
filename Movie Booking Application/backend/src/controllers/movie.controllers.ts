@@ -1,38 +1,28 @@
 import type { Request, Response } from "express";
-import MovieModel from "../models/movie.models";
+import * as movieService from "../services/movie.service";
 
 // Create Movie
 // POST api/v1/movies
 export const createMovie = async (req: Request, res: Response) => {
     try {
-        const movie = req.body;
+        const movie = await movieService.createMovie(req.body);
 
-        if (!movie) {
-            return res
-                .status(400)
-                .json({
-                    success: false,
-                    message: "Movie data is required"
-
-                });
-        }
-
-        await MovieModel.create(movie);
         return res
             .status(201)
             .json({
                 success: true,
                 message: "Movie created successfully",
-                movie
+                data: movie,
             });
 
     } catch (error) {
         console.error("Error creating movie:", error);
+
         return res
             .status(500)
             .json({
                 success: false,
-                message: "Internal server error"
+                message: "Internal Server Error",
             });
     }
 };
@@ -41,30 +31,26 @@ export const createMovie = async (req: Request, res: Response) => {
 // GET api/v1/movies
 export const getAllMovies = async (req: Request, res: Response) => {
     try {
-        const movies = await MovieModel.find();
-        if (!movies || movies.length === 0) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: "No movies found"
-                });
-        }
+        const movies = await movieService.getAllMovies();
+
         return res
             .status(200)
             .json({
                 success: true,
                 message: "Movies fetched successfully",
-                movies
+                count: movies.length,
+                data: movies,
             });
+
     } catch (error) {
         console.error("Error fetching movies:", error);
+
         return res
             .status(500)
             .json({
                 success: false,
-                message: "Internal server error"
-            });
+            message: "Internal Server Error",
+        });
     }
 };
 
@@ -72,29 +58,33 @@ export const getAllMovies = async (req: Request, res: Response) => {
 // GET api/v1/movies/:id
 export const getMovieById = async (req: Request, res: Response) => {
     try {
-        const movie = await MovieModel.findById(req.params.id);
+        const movie = await movieService.getMovieById(req.params.id as string);
+
         if (!movie) {
             return res
                 .status(404)
                 .json({
                     success: false,
-                    message: "Movie not found"
+                    message: "Movie not found",
                 });
         }
+
         return res
             .status(200)
             .json({
                 success: true,
                 message: "Movie fetched successfully",
-                movie
+                data: movie,
             });
+
     } catch (error) {
         console.error("Error fetching movie:", error);
+
         return res
             .status(500)
             .json({
                 success: false,
-                message: "Internal server error"
+                message: "Internal Server Error",
             });
     }
 };
@@ -103,33 +93,36 @@ export const getMovieById = async (req: Request, res: Response) => {
 // PUT api/v1/movies/:id
 export const updateMovie = async (req: Request, res: Response) => {
     try {
-        const updatedMovie = await MovieModel.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
+        const movie = await movieService.updateMovie(
+            req.params.id as string,
+            req.body
         );
-        if (!updatedMovie) {
+
+        if (!movie) {
             return res
                 .status(404)
                 .json({
                     success: false,
-                    message: "Movie not found"
+                    message: "Movie not found",
                 });
         }
+
         return res
             .status(200)
             .json({
                 success: true,
                 message: "Movie updated successfully",
-                movie: updatedMovie
+                data: movie,
             });
+
     } catch (error) {
         console.error("Error updating movie:", error);
+
         return res
             .status(500)
             .json({
                 success: false,
-                message: "Internal server error"
+                message: "Internal Server Error",
             });
     }
 };
@@ -138,31 +131,33 @@ export const updateMovie = async (req: Request, res: Response) => {
 // DELETE api/v1/movies
 export const deleteMovie = async (req: Request, res: Response) => {
     try {
-        const movie = await MovieModel.deleteOne({
-            _id: req.params.id
-        });
-        if (!movie.deletedCount) {
+        const movie = await movieService.deleteMovie(req.params.id as string);
+
+        if (!movie) {
             return res
                 .status(404)
                 .json({
                     success: false,
-                    message: "Movie not found"
+                    message: "Movie not found",
                 });
         }
+
         return res
             .status(200)
             .json({
                 success: true,
                 message: "Movie deleted successfully",
-                movie
+                data: movie,
             });
+
     } catch (error) {
         console.error("Error deleting movie:", error);
+
         return res
             .status(500)
             .json({
                 success: false,
-                message: "Internal server error"
+                message: "Internal Server Error",
             });
     }
 };

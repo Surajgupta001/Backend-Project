@@ -4,7 +4,7 @@ declare type MovieProps = {
     caste: string[];
     trailerUrl: string;
     language: string;
-    releaseDate: string;
+    releaseDate: Date;
     director: string;
     releaseStatus: string;
 };
