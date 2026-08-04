@@ -13,6 +13,6 @@ declare type TheatreProps = {
     name: string;
     description: string;
     city: string;
-    pinCode: Number;
-    addresses: string;    
+    pinCode: number;
+    addresses: string;
 };

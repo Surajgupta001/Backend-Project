@@ -2,35 +2,23 @@ import type { Request, Response } from "express";
 import { createTheatreService } from "../services/theatre.service";
 
 // Create Theatre
-// POST api/v1/theatres
+// POST /api/v1/theatres
 export const createTheatre = async (req: Request, res: Response) => {
     try {
-        const response = await createTheatreService(req.body);
+        const theatre = await createTheatreService(req.body);
 
-        if (!response) {
-            return res
-                .status(400)
-                .json({
-                    success: false,
-                    message: "Theatre not created",
-                });
-        }
+        return res.status(201).json({
+            success: true,
+            message: "Theatre created successfully",
+            data: theatre,
+        });
 
-        return res
-            .status(201)
-            .json({
-                success: true,
-                message: "Theatre created successfully",
-                response,
-            });
     } catch (error) {
         console.error("Error creating theatre:", error);
 
-        return res
-            .status(500)
-            .json({
-                success: false,
-                message: "Internal Server Error",
-            });
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 };
