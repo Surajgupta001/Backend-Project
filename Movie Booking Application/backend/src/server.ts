@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import { connectDB } from '../config/database';
 import movieRoutes from './routes/movie.routes';
+import theatreRoutes from './routes/theatre.routes';
 
 const app = express();
 const port = Bun.env.PORT || 5000;
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/v1/movies', movieRoutes);
+app.use('/api/v1/theatres', theatreRoutes);
 
 // Start Server
 app.listen(port, () => {
