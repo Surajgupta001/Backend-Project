@@ -8,3 +8,11 @@ declare type MovieProps = {
     director: string;
     releaseStatus: string;
 };
+
+declare type TheatreProps = {
+    name: string;
+    description: string;
+    city: string;
+    pinCode: Number;
+    addresses: string;    
+};

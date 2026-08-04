@@ -1,22 +1,22 @@
 import MovieModel from "../models/movie.models";
 
 // Create Movie
-export const createMovie = async (movieData: MovieProps) => {
+export const createMovieService = async (movieData: MovieProps) => {
     return await MovieModel.create(movieData);
 };
 
 // Get All Movies
-export const getAllMovies = async () => {
+export const getAllMoviesService = async () => {
     return await MovieModel.find();
 };
 
 // Get Movie By ID
-export const getMovieById = async (movieId: string) => {
+export const getMovieByIdService = async (movieId: string) => {
     return await MovieModel.findById(movieId);
 };
 
 // Update Movie
-export const updateMovie = async (movieId: string, movieData: Partial<MovieProps>) => {
+export const updateMovieService = async (movieId: string, movieData: Partial<MovieProps>) => {
     return await MovieModel.findByIdAndUpdate(
         movieId,
         movieData,
@@ -28,12 +28,12 @@ export const updateMovie = async (movieId: string, movieData: Partial<MovieProps
 };
 
 // Delete Movie
-export const deleteMovie = async (movieId: string) => {
+export const deleteMovieService = async (movieId: string) => {
     return await MovieModel.findByIdAndDelete(movieId);
 };
 
 // QUERY BASED SEARCH
-export const fetchMoviesByQuery = async (filter: Partial<MovieProps>) => {
+export const fetchMoviesByQueryService = async (filter: Partial<MovieProps>) => {
 
     const query: any = {};
 

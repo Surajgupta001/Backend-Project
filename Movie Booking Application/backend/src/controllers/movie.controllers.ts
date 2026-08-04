@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import * as movieService from "../services/movie.service";
+import { createMovieService, deleteMovieService, fetchMoviesByQueryService, getAllMoviesService, getMovieByIdService, updateMovieService } from "../services/movie.service";
 
 // Create Movie
 // POST api/v1/movies
 export const createMovie = async (req: Request, res: Response) => {
     try {
-        const movie = await movieService.createMovie(req.body);
+        const movie = await createMovieService(req.body);
 
         return res
             .status(201)
@@ -31,7 +31,7 @@ export const createMovie = async (req: Request, res: Response) => {
 // GET api/v1/movies
 export const getAllMovies = async (req: Request, res: Response) => {
     try {
-        const movies = await movieService.getAllMovies();
+        const movies = await getAllMoviesService();
 
         return res
             .status(200)
@@ -58,7 +58,7 @@ export const getAllMovies = async (req: Request, res: Response) => {
 // GET api/v1/movies/:id
 export const getMovieById = async (req: Request, res: Response) => {
     try {
-        const movie = await movieService.getMovieById(req.params.id as string);
+        const movie = await getMovieByIdService(req.params.id as string);
 
         if (!movie) {
             return res
@@ -93,7 +93,7 @@ export const getMovieById = async (req: Request, res: Response) => {
 // PUT api/v1/movies/:id
 export const updateMovie = async (req: Request, res: Response) => {
     try {
-        const movie = await movieService.updateMovie(
+        const movie = await updateMovieService(
             req.params.id as string,
             req.body
         );
@@ -131,7 +131,7 @@ export const updateMovie = async (req: Request, res: Response) => {
 // DELETE api/v1/movies
 export const deleteMovie = async (req: Request, res: Response) => {
     try {
-        const movie = await movieService.deleteMovie(req.params.id as string);
+        const movie = await deleteMovieService(req.params.id as string);
 
         if (!movie) {
             return res
@@ -172,7 +172,7 @@ export const getMovieByQuery = async (req: Request, res: Response) => {
             releaseStatus: req.query.releaseStatus as string,
         };
 
-        const response = await movieService.fetchMoviesByQuery(filter);
+        const response = await fetchMoviesByQueryService(filter);
 
         if (!response.success) {
             return res
