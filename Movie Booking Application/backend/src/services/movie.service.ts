@@ -31,3 +31,52 @@ export const updateMovie = async (movieId: string, movieData: Partial<MovieProps
 export const deleteMovie = async (movieId: string) => {
     return await MovieModel.findByIdAndDelete(movieId);
 };
+
+// QUERY BASED SEARCH
+export const fetchMoviesByQuery = async (filter: Partial<MovieProps>) => {
+
+    const query: any = {};
+
+    if (filter.name) {
+        query.name = {
+            $regex: filter.name,
+            $options: "i",
+        };
+    }
+
+    if (filter.language) {
+        query.language = {
+            $regex: filter.language,
+            $options: "i",
+        };
+    }
+
+    if (filter.director) {
+        query.director = {
+            $regex: filter.director,
+            $options: "i",
+        };
+    }
+
+    if (filter.releaseStatus) {
+        query.releaseStatus = filter.releaseStatus;
+    }
+
+    const movies = await MovieModel.find(query);
+
+    if (movies.length === 0) {
+        return {
+            success: false,
+            message: "No movies found matching the query.",
+            count: 0,
+            data: [],
+        };
+    }
+
+    return {
+        success: true,
+        message: "Movies fetched successfully.",
+        count: movies.length,
+        data: movies,
+    };
+};
