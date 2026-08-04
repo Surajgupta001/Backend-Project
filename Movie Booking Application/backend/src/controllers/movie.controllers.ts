@@ -49,8 +49,8 @@ export const getAllMovies = async (req: Request, res: Response) => {
             .status(500)
             .json({
                 success: false,
-            message: "Internal Server Error",
-        });
+                message: "Internal Server Error",
+            });
     }
 };
 
@@ -152,6 +152,49 @@ export const deleteMovie = async (req: Request, res: Response) => {
 
     } catch (error) {
         console.error("Error deleting movie:", error);
+
+        return res
+            .status(500)
+            .json({
+                success: false,
+                message: "Internal Server Error",
+            });
+    }
+};
+
+// QUERY BASED SEARCH
+export const getMovieByQuery = async (req: Request, res: Response) => {
+    try {
+        const filter: Partial<MovieProps> = {
+            name: req.query.name as string,
+            language: req.query.language as string,
+            director: req.query.director as string,
+            releaseStatus: req.query.releaseStatus as string,
+        };
+
+        const response = await movieService.fetchMoviesByQuery(filter);
+
+        if (!response.success) {
+            return res
+                .status(404)
+                .json({
+                    success: false,
+                    message: response.message,
+                    data: [],
+                });
+        }
+        
+        return res
+            .status(200)
+            .json({
+                success: true,
+                message: "Movies fetched successfully",
+                count: response.data.length,
+                data: response.data,
+            });
+
+    } catch (error) {
+        console.error(error);
 
         return res
             .status(500)
