@@ -17,3 +17,11 @@ export const getAllTheatresService = async () => {
 
     return theatres;
 };
+
+export const deleteTheatreService = async (theatreId: string): Promise<TheatreProps> => {
+    const theatre = await TheatreModel.findByIdAndDelete(theatreId);
+    if (!theatre) {
+        throw new Error("Theatre not found");
+    }
+    return theatre;
+};
