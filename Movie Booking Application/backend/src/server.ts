@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/v1/movies', movieRoutes);
-app.use('/api/v1/theatres', theatreRoutes);
+app.use("/api/v1/theatres", theatreRoutes);
 
 // Start Server
 app.listen(port, () => {

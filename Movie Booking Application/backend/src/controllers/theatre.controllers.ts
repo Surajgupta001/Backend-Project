@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { createTheatreService, getTheatresService } from "../services/theatre.service";
+import { createTheatreService, getAllTheatresService, getTheatresService } from "../services/theatre.service";
 
 // Create Theatre
 // POST /api/v1/theatres
@@ -27,6 +27,33 @@ export const createTheatre = async (req: Request, res: Response) => {
     }
 };
 
+// Get All Theatres
+// GET /api/v1/theatres
+export const getAllTheatres = async (req: Request, res: Response) => {
+    try {
+        const theatres = await getAllTheatresService();
+
+        return res
+            .status(200)
+            .json({
+                success: true,
+                message: "Theatres fetched successfully",
+                count: theatres.length,
+                data: theatres,
+            });
+
+    } catch (error) {
+        console.error("Error fetching theatres:", error);
+
+        return res
+            .status(500)
+            .json({
+                success: false,
+                message: "Internal Server Error",
+            });
+    }
+};
+
 // Get Theatre by ID
 // GET /api/v1/theatres/:id
 export const getTheatre = async (req: Request, res: Response) => {
@@ -43,6 +70,7 @@ export const getTheatre = async (req: Request, res: Response) => {
                     message: "Theatre not found",
                 });
         }
+
         return res
             .status(200)
             .json({

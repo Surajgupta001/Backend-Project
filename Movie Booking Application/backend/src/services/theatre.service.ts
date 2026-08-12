@@ -11,3 +11,9 @@ export const getTheatresService = async (theatreId: string): Promise<TheatreProp
     }
     return theatre;
 };
+
+export const getAllTheatresService = async () => {
+    const theatres = await TheatreModel.find({});
+
+    return theatres;
+};
