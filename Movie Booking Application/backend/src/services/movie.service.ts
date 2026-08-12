@@ -1,21 +1,31 @@
 import MovieModel from "../models/movie.models";
 
-// Create Movie
+/**
+ * Create a new movie document.
+ */
 export const createMovieService = async (movieData: MovieProps) => {
     return await MovieModel.create(movieData);
 };
 
-// Get All Movies
+/**
+ * Fetch all movies.
+ */
 export const getAllMoviesService = async () => {
     return await MovieModel.find();
 };
 
-// Get Movie By ID
+/**
+ * Find a movie by its MongoDB ObjectId.
+ * Returns `null` if not found — controller decides the HTTP response.
+ */
 export const getMovieByIdService = async (movieId: string) => {
     return await MovieModel.findById(movieId);
 };
 
-// Update Movie
+/**
+ * Update a movie by ID. Returns `null` if not found.
+ * `runValidators` ensures Mongoose schema validation runs on the update payload.
+ */
 export const updateMovieService = async (movieId: string, movieData: Partial<MovieProps>) => {
     return await MovieModel.findByIdAndUpdate(
         movieId,
@@ -27,56 +37,36 @@ export const updateMovieService = async (movieId: string, movieData: Partial<Mov
     );
 };
 
-// Delete Movie
+/**
+ * Delete a movie by ID. Returns `null` if not found.
+ */
 export const deleteMovieService = async (movieId: string) => {
     return await MovieModel.findByIdAndDelete(movieId);
 };
 
-// QUERY BASED SEARCH
+/**
+ * Query-based movie search.
+ * Builds a Mongoose filter from only the provided (truthy) query params.
+ * Returns the array directly — the controller handles the HTTP envelope.
+ */
 export const fetchMoviesByQueryService = async (filter: Partial<MovieProps>) => {
-
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (filter.name) {
-        query.name = {
-            $regex: filter.name,
-            $options: "i",
-        };
+        query.name = { $regex: filter.name, $options: "i" };
     }
 
     if (filter.language) {
-        query.language = {
-            $regex: filter.language,
-            $options: "i",
-        };
+        query.language = { $regex: filter.language, $options: "i" };
     }
 
     if (filter.director) {
-        query.director = {
-            $regex: filter.director,
-            $options: "i",
-        };
+        query.director = { $regex: filter.director, $options: "i" };
     }
 
     if (filter.releaseStatus) {
         query.releaseStatus = filter.releaseStatus;
     }
 
-    const movies = await MovieModel.find(query);
-
-    if (movies.length === 0) {
-        return {
-            success: false,
-            message: "No movies found matching the query.",
-            count: 0,
-            data: [],
-        };
-    }
-
-    return {
-        success: true,
-        message: "Movies fetched successfully.",
-        count: movies.length,
-        data: movies,
-    };
+    return await MovieModel.find(query);
 };

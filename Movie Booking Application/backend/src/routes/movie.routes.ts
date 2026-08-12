@@ -1,6 +1,14 @@
 import { Router } from "express";
-import { validateMovieCreateRequest } from "../middlewares/movie.middleware";
-import { createMovie, deleteMovie, getAllMovies, getMovieById, getMovieByQuery, updateMovie } from "../controllers/movie.controllers";
+import { validateMovieCreateRequest, validateMovieUpdateRequest } from "../middlewares/movie.middleware";
+import { validateObjectId } from "../middlewares/validateObjectId.middleware";
+import {
+    createMovie,
+    deleteMovie,
+    getAllMovies,
+    getMovieById,
+    getMovieByQuery,
+    updateMovie,
+} from "../controllers/movie.controllers";
 
 const movieRoutes = Router();
 
@@ -10,16 +18,16 @@ movieRoutes.post("/", validateMovieCreateRequest, createMovie);
 // Get All Movies
 movieRoutes.get("/", getAllMovies);
 
-// Filter/Search Movies
+// Filter/Search Movies (must be before /:id to avoid "filter" being treated as an ID)
 movieRoutes.get("/filter", getMovieByQuery);
 
 // Get Movie By ID
-movieRoutes.get("/:id", getMovieById);
+movieRoutes.get("/:id", validateObjectId, getMovieById);
 
 // Update Movie
-movieRoutes.put("/:id", updateMovie);
+movieRoutes.put("/:id", validateObjectId, validateMovieUpdateRequest, updateMovie);
 
 // Delete Movie
-movieRoutes.delete("/:id", deleteMovie);
+movieRoutes.delete("/:id", validateObjectId, deleteMovie);
 
 export default movieRoutes;
