@@ -1,12 +1,12 @@
 declare type MovieProps = {
     name: string;
     description: string;
-    caste: string[];
+    cast: string[];
     trailerUrl: string;
     language: string;
     releaseDate: Date;
     director: string;
-    releaseStatus: string;
+    releaseStatus: "UPCOMING" | "RELEASED" | "ENDED";
 };
 
 declare type TheatreProps = {
@@ -14,5 +14,5 @@ declare type TheatreProps = {
     description: string;
     city: string;
     pinCode: number;
-    addresses: string;
+    address: string;
 };

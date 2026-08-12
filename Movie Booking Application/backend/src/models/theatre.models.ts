@@ -3,29 +3,35 @@ import mongoose, { Schema } from "mongoose";
 const theatreSchema = new Schema<TheatreProps>({
     name: {
         type: String,
-        required: true,
+        required: [true, "Theatre name is required"],
         trim: true,
-        minlength: 3,
+        minlength: [3, "Theatre name must be at least 3 characters"],
     },
     description: {
         type: String,
-        required: true,
+        required: [true, "Theatre description is required"],
         trim: true,
     },
     city: {
         type: String,
-        required: true,
+        required: [true, "City is required"],
         trim: true,
     },
     pinCode: {
         type: Number,
-        required: true,
+        required: [true, "Pin code is required"],
+        validate: {
+            validator: (v: number) => v.toString().length === 6,
+            message: "Pin code must be exactly 6 digits",
+        },
     },
-    addresses: {
+    address: {
         type: String,
-        required: true,
+        required: [true, "Address is required"],
         trim: true,
     },
+}, {
+    timestamps: true,
 });
 
 const TheatreModel = mongoose.model<TheatreProps>("Theatre", theatreSchema);

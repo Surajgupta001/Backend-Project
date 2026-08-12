@@ -1,127 +1,84 @@
 import type { Request, Response } from "express";
-import { createTheatreService, deleteTheatreService, getAllTheatresService, getTheatresService } from "../services/theatre.service";
+import { asyncHandler } from "../utils/asyncHandler";
+import { ApiError } from "../utils/ApiError";
+import { ApiResponse } from "../utils/ApiResponse";
+import { ErrorCode } from "../utils/errorCodes";
+import {
+    createTheatreService,
+    deleteTheatreService,
+    getAllTheatresService,
+    getTheatreByIdService,
+    updateTheatreService,
+} from "../services/theatre.service";
 
-// Create Theatre
-// POST /api/v1/theatres
-export const createTheatre = async (req: Request, res: Response) => {
-    try {
-        const theatre = await createTheatreService(req.body);
+/**
+ * Create Theatre
+ * POST /api/v1/theatres
+ */
+export const createTheatre = asyncHandler(async (req: Request, res: Response) => {
+    const theatre = await createTheatreService(req.body);
 
-        return res
-            .status(201)
-            .json({
-                success: true,
-                message: "Theatre created successfully",
-                data: theatre,
-            });
+    res.status(201).json(
+        new ApiResponse(201, theatre, "Theatre created successfully"),
+    );
+});
 
-    } catch (error) {
-        console.error("Error creating theatre:", error);
+/**
+ * Get All Theatres
+ * GET /api/v1/theatres
+ */
+export const getAllTheatres = asyncHandler(async (_req: Request, res: Response) => {
+    const theatres = await getAllTheatresService();
 
-        return res
-            .status(500)
-            .json({
-                success: false,
-                message: "Internal Server Error",
-            });
+    res.status(200).json(
+        new ApiResponse(200, theatres, "Theatres fetched successfully"),
+    );
+});
+
+/**
+ * Get Theatre by ID
+ * GET /api/v1/theatres/:id
+ */
+export const getTheatre = asyncHandler(async (req: Request, res: Response) => {
+    const theatre = await getTheatreByIdService(req.params.id as string);
+
+    if (!theatre) {
+        throw new ApiError(404, ErrorCode.THEATRE_NOT_FOUND, "Theatre not found");
     }
-};
 
-// Get All Theatres
-// GET /api/v1/theatres
-export const getAllTheatres = async (req: Request, res: Response) => {
-    try {
-        const theatres = await getAllTheatresService();
+    res.status(200).json(
+        new ApiResponse(200, theatre, "Theatre fetched successfully"),
+    );
+});
 
-        return res
-            .status(200)
-            .json({
-                success: true,
-                message: "Theatres fetched successfully",
-                count: theatres.length,
-                data: theatres,
-            });
+/**
+ * Update Theatre
+ * PUT /api/v1/theatres/:id
+ */
+export const updateTheatre = asyncHandler(async (req: Request, res: Response) => {
+    const theatre = await updateTheatreService(req.params.id as string, req.body);
 
-    } catch (error) {
-        console.error("Error fetching theatres:", error);
-
-        return res
-            .status(500)
-            .json({
-                success: false,
-                message: "Internal Server Error",
-            });
+    if (!theatre) {
+        throw new ApiError(404, ErrorCode.THEATRE_NOT_FOUND, "Theatre not found");
     }
-};
 
-// Get Theatre by ID
-// GET /api/v1/theatres/:id
-export const getTheatre = async (req: Request, res: Response) => {
-    try {
-        const theatreId = req.params.id as string;
+    res.status(200).json(
+        new ApiResponse(200, theatre, "Theatre updated successfully"),
+    );
+});
 
-        const theatre = await getTheatresService(theatreId);
+/**
+ * Delete Theatre
+ * DELETE /api/v1/theatres/:id
+ */
+export const deleteTheatre = asyncHandler(async (req: Request, res: Response) => {
+    const theatre = await deleteTheatreService(req.params.id as string);
 
-        if (!theatre) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: "Theatre not found",
-                });
-        }
-
-        return res
-            .status(200)
-            .json({
-                success: true,
-                message: "Theatre retrieved successfully",
-                data: theatre,
-            });
-    } catch (error) {
-        console.error("Error fetching theatre:", error);
-
-        return res
-            .status(500)
-            .json({
-                success: false,
-                message: "Internal Server Error",
-            });
+    if (!theatre) {
+        throw new ApiError(404, ErrorCode.THEATRE_NOT_FOUND, "Theatre not found");
     }
-};
 
-// delete Theatre
-// DELETE /api/v1/theatres/:id
-export const deleteTheatre = async (req: Request, res: Response) => {
-    try {
-        const theatreId = req.params.id as string;
-
-        const theatre = await deleteTheatreService(theatreId);
-
-        if (!theatre) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: "Theatre not found",
-                });
-        };
-
-        return res
-            .status(200)
-            .json({
-                success: true,
-                message: "Theatre deleted successfully",
-                data: theatre,
-            });
-    } catch (error) {
-        console.error("Error deleting theatre:", error);
-
-        return res
-            .status(500)
-            .json({
-                success: false,
-                message: "Internal Server Error",
-            });
-    }
-};
+    res.status(200).json(
+        new ApiResponse(200, theatre, "Theatre deleted successfully"),
+    );
+});
