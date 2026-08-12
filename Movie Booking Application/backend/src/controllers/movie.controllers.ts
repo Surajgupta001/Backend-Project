@@ -58,7 +58,8 @@ export const getAllMovies = async (req: Request, res: Response) => {
 // GET api/v1/movies/:id
 export const getMovieById = async (req: Request, res: Response) => {
     try {
-        const movie = await getMovieByIdService(req.params.id as string);
+        const movieId = req.params.id as string;
+        const movie = await getMovieByIdService(movieId);
 
         if (!movie) {
             return res
@@ -93,8 +94,9 @@ export const getMovieById = async (req: Request, res: Response) => {
 // PUT api/v1/movies/:id
 export const updateMovie = async (req: Request, res: Response) => {
     try {
+        const movieId = req.params.id as string;
         const movie = await updateMovieService(
-            req.params.id as string,
+            movieId,
             req.body
         );
 
@@ -131,7 +133,8 @@ export const updateMovie = async (req: Request, res: Response) => {
 // DELETE api/v1/movies
 export const deleteMovie = async (req: Request, res: Response) => {
     try {
-        const movie = await deleteMovieService(req.params.id as string);
+        const movieId = req.params.id as string;
+        const movie = await deleteMovieService(movieId);
 
         if (!movie) {
             return res
