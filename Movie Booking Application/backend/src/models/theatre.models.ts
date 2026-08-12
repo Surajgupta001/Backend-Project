@@ -30,6 +30,10 @@ const theatreSchema = new Schema<TheatreProps>({
         required: [true, "Address is required"],
         trim: true,
     },
+    movies: {
+        type: [Schema.Types.ObjectId],
+        ref: "MovieModel"
+    }
 }, {
     timestamps: true,
 });

@@ -15,4 +15,5 @@ declare type TheatreProps = {
     city: string;
     pinCode: number;
     address: string;
+    movies: MovieProps[]; // Array of MovieProps
 };
