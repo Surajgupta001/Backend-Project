@@ -13,7 +13,7 @@ import { ErrorCode } from "../utils/errorCodes";
 export const validateObjectId = (req: Request, _res: Response, next: NextFunction): void => {
     const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    if (typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
         throw new ApiError(
             400,
             ErrorCode.INVALID_OBJECT_ID,

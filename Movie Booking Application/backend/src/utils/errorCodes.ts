@@ -15,6 +15,8 @@ export const ErrorCode = {
     // ── Movie ────────────────────────────────────────
     MOVIE_NOT_FOUND: "MOVIE_NOT_FOUND",
     MOVIE_CREATION_FAILED: "MOVIE_CREATION_FAILED",
+    INVALID_MOVIE_ID: "INVALID_MOVIE_ID",
+    INVALID_REQUEST: "INVALID_REQUEST",
 
     // ── Theatre ──────────────────────────────────────
     THEATRE_NOT_FOUND: "THEATRE_NOT_FOUND",
