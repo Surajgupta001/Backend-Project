@@ -32,7 +32,8 @@ const theatreSchema = new Schema<TheatreProps>({
     },
     movies: {
         type: [Schema.Types.ObjectId],
-        ref: "MovieModel"
+        ref: "Movie",
+        default: [],
     }
 }, {
     timestamps: true,

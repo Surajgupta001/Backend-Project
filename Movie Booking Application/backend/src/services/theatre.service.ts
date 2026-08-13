@@ -1,4 +1,8 @@
+import mongoose from "mongoose";
 import TheatreModel from "../models/theatre.models";
+import MovieModel from "../models/movie.models";
+import { ApiError } from "../utils/ApiError";
+import { ErrorCode } from "../utils/errorCodes";
 
 /**
  * Create a new theatre document.
@@ -41,4 +45,53 @@ export const updateTheatreService = async (theatreId: string, theatreData: Parti
  */
 export const deleteTheatreService = async (theatreId: string) => {
     return await TheatreModel.findByIdAndDelete(theatreId);
+};
+
+/**
+ * Update the list of movies in a theatre.
+ * If `insert` is true, add the movie IDs to the theatre's list;
+ * if false, remove them.
+ */
+export const updateMovieInTheatreService = async (theatreId: string, movieIds: string[], insert: boolean) => {
+    const theatre = await TheatreModel.findById(theatreId);
+
+    if (!theatre) {
+        return null;
+    }
+
+    if (insert) {
+        // Check that all movies actually exist
+        const movies = await MovieModel.find({
+            _id: { $in: movieIds },
+        });
+
+        if (movies.length !== movieIds.length) {
+            throw new ApiError(
+                404,
+                ErrorCode.MOVIE_NOT_FOUND,
+                "One or more movies were not found"
+            );
+        }
+
+        // Add movies without duplicates
+        for (const movieId of movieIds) {
+            const movieExists = theatre.movies.some((id) => id.toString() === movieId);
+
+            if (!movieExists) {
+                theatre.movies.push(
+                    new mongoose.Types.ObjectId(movieId)
+                );
+            }
+        }
+    } else {
+        // Remove movies
+        theatre.movies = theatre.movies.filter((id) => !movieIds.includes(id.toString()));
+    }
+
+    await theatre.save();
+
+    // Populate movies
+    await theatre.populate("movies");
+
+    return theatre;
 };
