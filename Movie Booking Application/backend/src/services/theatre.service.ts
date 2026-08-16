@@ -3,6 +3,7 @@ import TheatreModel from "../models/theatre.models";
 import MovieModel from "../models/movie.models";
 import { ApiError } from "../utils/ApiError";
 import { ErrorCode } from "../utils/errorCodes";
+import { escapeRegex } from "../utils/escapeRegex";
 import type { PaginationProps, TheatreProps } from "../types";
 
 /**
@@ -28,7 +29,7 @@ export const getAllTheatresService = async (filter: Partial<TheatreProps>, pagin
 
     if (filter.city) {
         query.city = {
-            $regex: filter.city,
+            $regex: escapeRegex(filter.city),
             $options: "i",
         };
     }
@@ -39,7 +40,7 @@ export const getAllTheatresService = async (filter: Partial<TheatreProps>, pagin
 
     if (filter.name) {
         query.name = {
-            $regex: filter.name,
+            $regex: escapeRegex(filter.name),
             $options: "i",
         };
     }
