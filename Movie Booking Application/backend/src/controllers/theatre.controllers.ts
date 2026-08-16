@@ -22,8 +22,14 @@ export const createTheatre = asyncHandler(async (req: Request, res: Response) =>
  * Get All Theatres
  * GET /api/v1/theatres
  */
-export const getAllTheatres = asyncHandler(async (_req: Request, res: Response) => {
-    const theatres = await getAllTheatresService();
+export const getAllTheatres = asyncHandler(async (req: Request, res: Response) => {
+    const { city, pinCode } = req.query;
+
+    const theatres = await getAllTheatresService({
+        city: city as string | undefined,
+        pinCode: pinCode ? Number(pinCode) : undefined,
+        name: req.query.name as string | undefined,
+    });
 
     res.status(200).json(
         new ApiResponse(200, theatres, "Theatres fetched successfully"),
