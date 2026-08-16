@@ -1,3 +1,5 @@
+import type mongoose from "mongoose";
+
 export interface MovieProps {
     name: string;
     description: string;
@@ -15,7 +17,7 @@ export interface TheatreProps {
     city: string;
     pinCode: number;
     address: string;
-    movies?: any[];
+    movies?: mongoose.Types.ObjectId[];
 }
 
 export interface PaginationProps {

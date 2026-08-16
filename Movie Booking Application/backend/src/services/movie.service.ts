@@ -1,5 +1,6 @@
 import MovieModel from "../models/movie.models";
 import type { MovieProps } from "../types";
+import { escapeRegex } from "../utils/escapeRegex";
 
 
 /**
@@ -55,15 +56,15 @@ export const fetchMoviesByQueryService = async (filter: Partial<MovieProps>) => 
     const query: Record<string, unknown> = {};
 
     if (filter.name) {
-        query.name = { $regex: filter.name, $options: "i" };
+        query.name = { $regex: escapeRegex(filter.name), $options: "i" };
     }
 
     if (filter.language) {
-        query.language = { $regex: filter.language, $options: "i" };
+        query.language = { $regex: escapeRegex(filter.language), $options: "i" };
     }
 
     if (filter.director) {
-        query.director = { $regex: filter.director, $options: "i" };
+        query.director = { $regex: escapeRegex(filter.director), $options: "i" };
     }
 
     if (filter.releaseStatus) {
