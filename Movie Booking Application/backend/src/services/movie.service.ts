@@ -1,4 +1,6 @@
 import MovieModel from "../models/movie.models";
+import type { MovieProps } from "../types";
+
 
 /**
  * Create a new movie document.

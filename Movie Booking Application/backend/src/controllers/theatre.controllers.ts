@@ -5,6 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ErrorCode } from "../utils/errorCodes";
 import mongoose from "mongoose";
+import type { PaginationProps, TheatreProps } from "../types";
 
 /**
  * Create Theatre

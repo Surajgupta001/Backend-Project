@@ -3,6 +3,7 @@ import TheatreModel from "../models/theatre.models";
 import MovieModel from "../models/movie.models";
 import { ApiError } from "../utils/ApiError";
 import { ErrorCode } from "../utils/errorCodes";
+import type { PaginationProps, TheatreProps } from "../types";
 
 /**
  * Create a new theatre document.
@@ -115,6 +116,8 @@ export const updateMovieInTheatreService = async (theatreId: string, movieIds: s
             );
         }
 
+        theatre.movies = theatre.movies || [];
+
         // Add movies without duplicates
         for (const movieId of movieIds) {
             const movieExists = theatre.movies.some((id) => id.toString() === movieId);
@@ -127,7 +130,7 @@ export const updateMovieInTheatreService = async (theatreId: string, movieIds: s
         }
     } else {
         // Remove movies
-        theatre.movies = theatre.movies.filter((id) => !movieIds.includes(id.toString()));
+        theatre.movies = (theatre.movies || []).filter((id) => !movieIds.includes(id.toString()));
     }
 
     await theatre.save();

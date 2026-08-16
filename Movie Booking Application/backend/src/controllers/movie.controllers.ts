@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { ErrorCode } from "../utils/errorCodes";
 import { createMovieService, deleteMovieService, fetchMoviesByQueryService, getAllMoviesService, getMovieByIdService, updateMovieService } from "../services/movie.service";
+import type { MovieProps } from "../types";
 
 /**
  * Create Movie

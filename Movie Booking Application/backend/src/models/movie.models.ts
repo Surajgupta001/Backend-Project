@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import type { MovieProps } from "../types";
 
 const movieSchema = new Schema<MovieProps>({
     name: {
