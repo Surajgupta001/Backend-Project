@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateTheatreCreateRequest, validateTheatreUpdateRequest } from "../middlewares/theatre.middleware";
+import { validateTheatreCreateRequest, validateTheatreUpdateRequest } from "../validators/theatre.validator";
 import { validateObjectId } from "../middlewares/validateObjectId.middleware";
 import {
     createTheatre,

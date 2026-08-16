@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateMovieCreateRequest, validateMovieUpdateRequest } from "../middlewares/movie.middleware";
+import { validateMovieCreateRequest, validateMovieUpdateRequest } from "../validators/movie.validator";
 import { validateObjectId } from "../middlewares/validateObjectId.middleware";
 import {
     createMovie,

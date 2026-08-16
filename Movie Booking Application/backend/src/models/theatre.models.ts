@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import type { TheatreProps } from "../types";
 
 const theatreSchema = new Schema<TheatreProps>({
     name: {
