@@ -22,8 +22,22 @@ export const getTheatreByIdService = async (theatreId: string) => {
 /**
  * Fetch all theatres.
  */
-export const getAllTheatresService = async () => {
-    return await TheatreModel.find();
+export const getAllTheatresService = async (filter: Partial<TheatreProps>) => {
+    const query: Record<string, unknown> = {};
+
+    if (filter.city) {
+        query.city = { $regex: filter.city, $options: "i" };
+    }
+
+    if (filter.pinCode) {
+        query.pinCode = filter.pinCode;
+    }
+
+    if (filter.name) {
+        query.name = { $regex: filter.name, $options: "i" };
+    }
+
+    return await TheatreModel.find(query);
 };
 
 /**
