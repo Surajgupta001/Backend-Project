@@ -20,6 +20,11 @@ declare global {
         address: string;
         movies: Types.ObjectId[];
     };
+
+    type PaginationProps = {
+        page: number;
+        limit: number;
+    };
 }
 
 export { };

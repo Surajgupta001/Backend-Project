@@ -23,18 +23,26 @@ export const createTheatre = asyncHandler(async (req: Request, res: Response) =>
  * GET /api/v1/theatres
  */
 export const getAllTheatres = asyncHandler(async (req: Request, res: Response) => {
-    const { city, pinCode } = req.query;
+    const { city, pinCode, name } = req.query;
 
-    const theatres = await getAllTheatresService({
+    const filter: Partial<TheatreProps> = {
         city: city as string | undefined,
         pinCode: pinCode ? Number(pinCode) : undefined,
-        name: req.query.name as string | undefined,
-    });
+        name: name as string | undefined,
+    };
 
-    res.status(200).json(
-        new ApiResponse(200, theatres, "Theatres fetched successfully"),
+    const pagination: PaginationProps = {
+        page: Math.max(Number(req.query.page) || 1, 1),
+        limit: Math.min(Math.max(Number(req.query.limit) || 10, 1), 100),
+    };
+
+    const theatres = await getAllTheatresService(filter, pagination);
+
+    return res.status(200).json(
+        new ApiResponse(200, theatres, "Theatres fetched successfully")
     );
-});
+}
+);
 
 /**
  * Get Theatre by ID
@@ -100,7 +108,7 @@ export const updateMoviesInTheatre = asyncHandler(async (req: Request, res: Resp
             "Movie IDs must be a non-empty array of valid IDs"
         );
     }
-    
+
     // Validate insert
     if (typeof insert !== "boolean") {
         throw new ApiError(
