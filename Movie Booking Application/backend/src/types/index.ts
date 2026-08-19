@@ -24,3 +24,11 @@ export interface PaginationProps {
     page: number;
     limit: number;
 }
+
+export interface AuthAdminProps {
+    name: string;
+    email: string;
+    password: string;
+    userRole: "CUSTOMER" | "ADMIN";
+    userStatus: "APPROVED" | "BLOCKED";
+}
