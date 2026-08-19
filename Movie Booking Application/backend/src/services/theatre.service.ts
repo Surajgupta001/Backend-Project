@@ -24,7 +24,7 @@ export const getTheatreByIdService = async (theatreId: string) => {
 /**
  * Fetch all theatres.
  */
-export const getAllTheatresService = async (filter: Partial<TheatreProps>, pagination: PaginationProps = { page: 1, limit: 10, }) => {
+export const getAllTheatresService = async (filter: Partial<TheatreProps> & { movieIds?: string[] }, pagination: PaginationProps = { page: 1, limit: 10, }) => {
     const query: Record<string, unknown> = {};
 
     if (filter.city) {
@@ -42,6 +42,14 @@ export const getAllTheatresService = async (filter: Partial<TheatreProps>, pagin
         query.name = {
             $regex: escapeRegex(filter.name),
             $options: "i",
+        };
+    }
+
+
+    // Theatre must contain ALL requested movies
+    if (filter.movieIds?.length) {
+        query.movies = {
+            $all: filter.movieIds,
         };
     }
 
