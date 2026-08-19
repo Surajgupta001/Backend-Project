@@ -24,12 +24,13 @@ export const createTheatre = asyncHandler(async (req: Request, res: Response) =>
  * GET /api/v1/theatres
  */
 export const getAllTheatres = asyncHandler(async (req: Request, res: Response) => {
-    const { city, pinCode, name } = req.query;
+    const { city, pinCode, name, movieIds } = req.query;
 
-    const filter: Partial<TheatreProps> = {
+    const filter: Partial<TheatreProps> & { movieIds?: string[] } = {
         city: city as string | undefined,
         pinCode: pinCode ? Number(pinCode) : undefined,
         name: name as string | undefined,
+        movieIds: movieIds ? (movieIds as string).split(",") : undefined,
     };
 
     const pagination: PaginationProps = {
@@ -42,8 +43,7 @@ export const getAllTheatres = asyncHandler(async (req: Request, res: Response) =
     return res.status(200).json(
         new ApiResponse(200, theatres, "Theatres fetched successfully")
     );
-}
-);
+});
 
 /**
  * Get Theatre by ID
