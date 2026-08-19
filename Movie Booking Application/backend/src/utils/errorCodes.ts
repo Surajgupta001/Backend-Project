@@ -21,6 +21,7 @@ export const ErrorCode = {
     // ── Theatre ──────────────────────────────────────
     THEATRE_NOT_FOUND: "THEATRE_NOT_FOUND",
     THEATRE_CREATION_FAILED: "THEATRE_CREATION_FAILED",
+    MOVIE_NOT_IN_THEATRE: "MOVIE_NOT_IN_THEATRE",
 } as const;
 
 export type ErrorCodeType = (typeof ErrorCode)[keyof typeof ErrorCode];

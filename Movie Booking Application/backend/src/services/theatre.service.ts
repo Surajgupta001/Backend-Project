@@ -108,7 +108,7 @@ export const updateMovieInTheatreService = async (theatreId: string, movieIds: s
     const theatre = await TheatreModel.findById(theatreId);
 
     if (!theatre) {
-        return null;
+        throw new ApiError(404, ErrorCode.THEATRE_NOT_FOUND, "Theatre not found");
     }
 
     if (insert) {
@@ -146,6 +146,23 @@ export const updateMovieInTheatreService = async (theatreId: string, movieIds: s
 
     // Populate movies
     await theatre.populate("movies");
+
+    return theatre;
+};
+
+/**
+ * Get all movies in a theatre by theatre ID.
+ * Returns the theatre name with populated movies.
+ */
+export const getMoviesInTheatreService = async (theatreId: string) => {
+    const theatre = await TheatreModel.findById(theatreId, {
+        name: 1,
+        movies: 1,
+    }).populate("movies");
+
+    if (!theatre) {
+        throw new ApiError(404, ErrorCode.THEATRE_NOT_FOUND, "Theatre not found");
+    }
 
     return theatre;
 };

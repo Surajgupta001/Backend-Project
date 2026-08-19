@@ -5,6 +5,7 @@ import {
     createTheatre,
     deleteTheatre,
     getAllTheatres,
+    getMoviesInTheatre,
     getTheatre,
     updateMoviesInTheatre,
     updateTheatre,
@@ -29,5 +30,7 @@ theatreRoutes.delete("/:id", validateObjectId, deleteTheatre);
 
 // Update Movies in Theatre
 theatreRoutes.patch("/:id/movies", validateObjectId, updateMoviesInTheatre);
+
+theatreRoutes.get("/:id/movies", validateObjectId, getMoviesInTheatre);
 
 export default theatreRoutes;

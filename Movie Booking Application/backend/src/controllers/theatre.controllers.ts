@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { createTheatreService, deleteTheatreService, getAllTheatresService, getTheatreByIdService, updateMovieInTheatreService, updateTheatreService } from "../services/theatre.service";
+import { createTheatreService, deleteTheatreService, getAllTheatresService, getMoviesInTheatreService, getTheatreByIdService, updateMovieInTheatreService, updateTheatreService } from "../services/theatre.service";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -137,5 +137,19 @@ export const updateMoviesInTheatre = asyncHandler(async (req: Request, res: Resp
                 ? "Movies added to theatre successfully"
                 : "Movies removed from theatre successfully"
         )
+    );
+});
+
+/**
+ * Get Movies in Theatre
+ * GET /api/v1/theatres/:id/movies
+ */
+export const getMoviesInTheatre = asyncHandler(async (req: Request, res: Response) => {
+    const theatreId = req.params.id as string;
+
+    const theatre = await getMoviesInTheatreService(theatreId);
+
+    return res.status(200).json(
+        new ApiResponse(200, theatre, "Movies in theatre fetched successfully")
     );
 });
