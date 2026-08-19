@@ -166,3 +166,20 @@ export const getMoviesInTheatreService = async (theatreId: string) => {
 
     return theatre;
 };
+
+/**
+ * Check if a movie is in a theatre.
+ */
+export const checkMovieInATheatreService = async (theatreId: string, movieId: string) => {
+    const theatre = await TheatreModel.findById(theatreId);
+
+    if (!theatre) {
+        throw new ApiError(404, ErrorCode.THEATRE_NOT_FOUND, "Theatre not found");
+    }
+
+    if (!theatre.movies || theatre.movies.length === 0) {
+        return false;
+    };
+
+    return theatre.movies?.some((id) => id.toString() === movieId) ?? false;
+};
