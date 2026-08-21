@@ -1,9 +1,9 @@
 import mongoose, { Schema } from "mongoose";
-import type { AuthAdminProps } from "../types";
+import type { UserDocument } from "../types";
 import bcrypt from "bcrypt";
 import { USER_ROLES, USER_STATUS } from "../constants/constants";
 
-const userSchema = new Schema<AuthAdminProps>({
+const userSchema = new Schema<UserDocument>({
     name: {
         type: String,
         required: [true, "Name is required"],
@@ -17,7 +17,10 @@ const userSchema = new Schema<AuthAdminProps>({
         unique: true,
         lowercase: true,
         trim: true,
-        match: [/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]{2,}$/, "Please provide a valid email address",],
+        match: [
+            /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]{2,}$/,
+            "Please provide a valid email address",
+        ],
     },
 
     password: {
@@ -39,30 +42,28 @@ const userSchema = new Schema<AuthAdminProps>({
     },
 }, {
     timestamps: true,
-});
+}
+);
 
-// Pre-save middleware to hash the password before saving the user document
+// Pre-save middleware to hash the password
 userSchema.pre("save", async function (next) {
-    // Skip hashing if the password has not been modified
     if (!this.isModified("password")) {
         return next();
     }
-
     try {
-        // Generate salt
         const salt = await bcrypt.genSalt(10);
-
-        // Hash the password
         this.password = await bcrypt.hash(this.password, salt);
-
-        // Continue saving the document
         next();
     } catch (error) {
-        // Pass the error to Mongoose
         next(error as Error);
     }
 });
 
-const UserModel = mongoose.model<AuthAdminProps>("User", userSchema);
+// Check password
+userSchema.methods.isValidPassword = async function (password: string): Promise<boolean> {
+    return await bcrypt.compare(password, this.password);
+};
+
+const UserModel = mongoose.model<UserDocument>("User", userSchema);
 
 export default UserModel;

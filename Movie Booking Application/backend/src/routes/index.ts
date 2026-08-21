@@ -7,6 +7,6 @@ const router = Router();
 
 router.use("/movies", movieRoutes);
 router.use("/theatres", theatreRoutes);
-router.use('/auths', authAdminRouter);
+router.use("/auth", authAdminRouter);
 
 export default router;

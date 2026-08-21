@@ -1,4 +1,5 @@
 import type mongoose from "mongoose";
+import type { Document } from "mongoose";
 import type { UserRole, UserStatus } from "../constants/constants";
 
 export interface MovieProps {
@@ -32,4 +33,8 @@ export interface AuthAdminProps {
     password: string;
     userRole: UserRole;
     userStatus: UserStatus;
+}
+
+export interface UserDocument extends AuthAdminProps, Document {
+    isValidPassword(password: string): Promise<boolean>;
 }
