@@ -1,4 +1,5 @@
 import type mongoose from "mongoose";
+import type { UserRole, UserStatus } from "../constants/constants";
 
 export interface MovieProps {
     name: string;
@@ -29,6 +30,6 @@ export interface AuthAdminProps {
     name: string;
     email: string;
     password: string;
-    userRole: "CUSTOMER" | "ADMIN";
-    userStatus: "APPROVED" | "BLOCKED";
+    userRole: UserRole;
+    userStatus: UserStatus;
 }
