@@ -3,6 +3,7 @@ import UserModel from "../models/user.models";
 import type { AuthAdminProps } from "../types";
 import { ApiError } from "../utils/ApiError";
 import { ErrorCode } from "../utils/errorCodes";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 
 /**
  * Creates a user in the database.
@@ -33,8 +34,8 @@ export const createUserService = async (userData: AuthAdminProps) => {
 /**
  * Signin user by email.
  */
-export const signinByEmailService = async (userData: Pick<AuthAdminProps, 'email' | 'password'>) => {
-    const user = await UserModel.findOne({email: userData.email});
+export const signinByEmailService = async (userData: Pick<AuthAdminProps, "email" | "password">) => {
+    const user = await UserModel.findOne({ email: userData.email});
 
     if (!user) {
         throw new ApiError(404, ErrorCode.USER_NOT_FOUND, "User not found");
@@ -45,6 +46,29 @@ export const signinByEmailService = async (userData: Pick<AuthAdminProps, 'email
     if (!isPasswordValid) {
         throw new ApiError(401, ErrorCode.INVALID_CREDENTIALS, "Invalid email or password");
     }
-    
-    return user;
+
+    // Check user status
+    if (user.userStatus === USER_STATUS.pending) {
+        throw new ApiError(403, ErrorCode.FORBIDDEN, "User account is pending approval");
+    }
+
+    if (user.userStatus === USER_STATUS.rejected) {
+        throw new ApiError(403, ErrorCode.FORBIDDEN, "User account has been rejected");
+    }
+
+    // JWT payload
+    const payload = {
+        userId: user._id.toString(),
+        role: user.userRole,
+    };
+
+    // Generate tokens
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+
+    return {
+        user,
+        accessToken,
+        refreshToken,
+    };
 };
