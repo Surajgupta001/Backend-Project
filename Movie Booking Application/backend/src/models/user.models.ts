@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import type { AuthAdminProps } from "../types";
 import bcrypt from "bcrypt";
+import { USER_ROLES, USER_STATUS } from "../constants/constants";
 
 const userSchema = new Schema<AuthAdminProps>({
     name: {
@@ -27,14 +28,14 @@ const userSchema = new Schema<AuthAdminProps>({
 
     userRole: {
         type: String,
-        enum: ["CUSTOMER", "ADMIN"],
-        default: "CUSTOMER",
+        enum: Object.values(USER_ROLES),
+        default: USER_ROLES.customer,
     },
 
     userStatus: {
         type: String,
-        enum: ["APPROVED", "BLOCKED"],
-        default: "APPROVED",
+        enum: Object.values(USER_STATUS),
+        default: USER_STATUS.approved,
     },
 }, {
     timestamps: true,
@@ -50,7 +51,7 @@ userSchema.pre("save", async function (next) {
     try {
         // Generate salt
         const salt = await bcrypt.genSalt(10);
-        
+
         // Hash the password
         this.password = await bcrypt.hash(this.password, salt);
 
