@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import type { AuthAdminProps } from "../types";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema<AuthAdminProps>({
     name: {
@@ -37,6 +38,28 @@ const userSchema = new Schema<AuthAdminProps>({
     },
 }, {
     timestamps: true,
+});
+
+// Pre-save middleware to hash the password before saving the user document
+userSchema.pre("save", async function (next) {
+    // Skip hashing if the password has not been modified
+    if (!this.isModified("password")) {
+        return next();
+    }
+
+    try {
+        // Generate salt
+        const salt = await bcrypt.genSalt(10);
+        
+        // Hash the password
+        this.password = await bcrypt.hash(this.password, salt);
+
+        // Continue saving the document
+        next();
+    } catch (error) {
+        // Pass the error to Mongoose
+        next(error as Error);
+    }
 });
 
 const UserModel = mongoose.model<AuthAdminProps>("User", userSchema);
