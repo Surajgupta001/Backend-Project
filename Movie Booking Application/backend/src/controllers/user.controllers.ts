@@ -1,22 +1,51 @@
 import type { Request, Response } from "express";
-import { asyncHandler } from "../utils/asyncHandler";
 import type { AuthAdminProps } from "../types";
-import { createUserService } from "../services/user.service";
+import { createUserService, signinByEmailService } from "../services/user.service";
 import { ApiResponse } from "../utils/ApiResponse";
-import { ErrorCode } from "../utils/errorCodes";
+import { asyncHandler } from "../utils/asyncHandler";
 
+/**
+ * Signup user
+ * POST /api/v1/auth/signup
+ */
 export const createUser = asyncHandler(async (req: Request, res: Response) => {
     const userData: AuthAdminProps = req.body;
 
     const user = await createUserService(userData);
 
-    if (!user) {
-        return res.status(400).json(
-            new ApiResponse(400, ErrorCode.USER_NOT_FOUND, "Failed to create user")
-        );
-    }
+    const userResponse = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        userRole: user.userRole,
+        userStatus: user.userStatus,
+    };
 
     return res.status(201).json(
-        new ApiResponse(201, user, "User created successfully")
+        new ApiResponse(201, userResponse, "User created successfully")
     );
-});
+}
+);
+
+/**
+ * Signin user by email
+ * POST /api/v1/auth/signin
+ */
+export const signinUser = asyncHandler(async (req: Request, res: Response) => {
+    const userData: Pick<AuthAdminProps, 'email' | 'password'> = req.body;
+
+    const user = await signinByEmailService(userData);
+
+    const userResponse = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        userRole: user.userRole,
+        userStatus: user.userStatus,
+    };
+
+    return res.status(200).json(
+        new ApiResponse(200, userResponse, "User signed in successfully")
+    );
+}
+);
