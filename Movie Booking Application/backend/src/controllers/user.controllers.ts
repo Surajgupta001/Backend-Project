@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import type { AuthAdminProps } from "../types";
+import { asyncHandler } from "../utils/asyncHandler";
 import { createUserService, signinByEmailService } from "../services/user.service";
 import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
 
 /**
  * Signup user
@@ -32,9 +32,9 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
  * POST /api/v1/auth/signin
  */
 export const signinUser = asyncHandler(async (req: Request, res: Response) => {
-    const userData: Pick<AuthAdminProps, 'email' | 'password'> = req.body;
+    const userData: Pick<AuthAdminProps, "email" | "password"> = req.body;
 
-    const user = await signinByEmailService(userData);
+    const { user, accessToken, refreshToken } = await signinByEmailService(userData);
 
     const userResponse = {
         _id: user._id,
@@ -45,7 +45,14 @@ export const signinUser = asyncHandler(async (req: Request, res: Response) => {
     };
 
     return res.status(200).json(
-        new ApiResponse(200, userResponse, "User signed in successfully")
+        new ApiResponse(
+            200, {
+            user: userResponse,
+            accessToken,
+            refreshToken,
+        },
+            "User signed in successfully"
+        )
     );
 }
 );
