@@ -11,6 +11,7 @@ import {
     updateMoviesInTheatre,
     updateTheatre,
 } from "../controllers/theatre.controllers";
+import { verifyJwt } from "../middlewares/jwt.middleware";
 
 const theatreRoutes = Router();
 
@@ -27,7 +28,7 @@ theatreRoutes.get("/:id", validateObjectId, getTheatre);
 theatreRoutes.put("/:id", validateObjectId, validateTheatreUpdateRequest, updateTheatre);
 
 // Delete Theatre
-theatreRoutes.delete("/:id", validateObjectId, deleteTheatre);
+theatreRoutes.delete("/:id", verifyJwt, validateObjectId, deleteTheatre);
 
 // Update Movies in Theatre
 theatreRoutes.patch("/:id/movies", validateObjectId, updateMoviesInTheatre);
