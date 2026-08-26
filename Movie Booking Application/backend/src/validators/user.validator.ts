@@ -69,3 +69,39 @@ export const validateSigninRequest = (req: Request, _res: Response, next: NextFu
 
     next();
 };
+
+/**
+ * Validates the request body for password reset.
+ */
+export const validateResetPasswordRequest = (req: Request, _res: Response, next: NextFunction): void => {
+    const { oldPassword, newPassword } = req.body;
+
+    const errors: Record<string, string>[] = [];
+
+    // Old password
+    if (!oldPassword || typeof oldPassword !== "string" || oldPassword.length === 0) {
+        errors.push({
+            field: "oldPassword",
+            message: "Old password is required.",
+        });
+    }
+
+    // New password
+    if (!newPassword || typeof newPassword !== "string" || newPassword.length === 0) {
+        errors.push({
+            field: "newPassword",
+            message: "New password is required.",
+        });
+    } else if (newPassword.length < 6) {
+        errors.push({
+            field: "newPassword",
+            message: "New password must be at least 6 characters.",
+        });
+    }
+
+    if (errors.length > 0) {
+        throw new ApiError(400, ErrorCode.VALIDATION_ERROR, "Validation failed", errors);
+    }
+
+    next();
+};

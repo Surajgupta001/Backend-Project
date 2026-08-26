@@ -1,6 +1,6 @@
 import { USER_ROLES, USER_STATUS } from "../constants/constants";
 import UserModel from "../models/user.models";
-import type { AuthAdminProps } from "../types";
+import type { AuthAdminProps, ResetPasswordProps } from "../types";
 import { ApiError } from "../utils/ApiError";
 import { ErrorCode } from "../utils/errorCodes";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
@@ -35,7 +35,7 @@ export const createUserService = async (userData: AuthAdminProps) => {
  * Signin user by email.
  */
 export const signinByEmailService = async (userData: Pick<AuthAdminProps, "email" | "password">) => {
-    const user = await UserModel.findOne({ email: userData.email});
+    const user = await UserModel.findOne({ email: userData.email });
 
     if (!user) {
         throw new ApiError(404, ErrorCode.USER_NOT_FOUND, "User not found");
@@ -71,4 +71,41 @@ export const signinByEmailService = async (userData: Pick<AuthAdminProps, "email
         accessToken,
         refreshToken,
     };
+};
+
+/**
+ * Reset user password.
+ */
+export const resetPasswordService = async (resetPasswordData: ResetPasswordProps) => {
+    const { userId, oldPassword, newPassword, confirmPassword } = resetPasswordData;
+
+    if (newPassword !== confirmPassword) {
+        throw new ApiError(400, ErrorCode.INVALID_CONFIRM_PASSWORD, "New password and confirm password do not match");
+    }
+    
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+        throw new ApiError(404, ErrorCode.USER_NOT_FOUND, "User not found");
+    }
+
+    // Verify old password
+    const isOldPasswordValid = await user.isValidPassword(oldPassword);
+
+    if (!isOldPasswordValid) {
+        throw new ApiError(401, ErrorCode.INVALID_CREDENTIALS, "Invalid old password");
+    }
+
+    // Prevent using the same password
+    if (oldPassword === newPassword) {
+        throw new ApiError(400, ErrorCode.SAME_PASSWORD, "New password cannot be the same as the old password");
+    }
+
+    // Set new password
+    user.password = newPassword;
+
+    // bcrypt pre-save middleware hashes the password
+    await user.save();
+
+    return user;
 };

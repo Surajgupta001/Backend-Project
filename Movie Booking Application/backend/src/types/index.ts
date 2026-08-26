@@ -38,3 +38,10 @@ export interface AuthAdminProps {
 export interface UserDocument extends AuthAdminProps, Document {
     isValidPassword(password: string): Promise<boolean>;
 }
+
+export interface ResetPasswordProps {
+    userId: string;
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
