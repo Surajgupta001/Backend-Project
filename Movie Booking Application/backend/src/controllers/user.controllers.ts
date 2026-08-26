@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import type { AuthAdminProps } from "../types";
+import type { AuthAdminProps, ResetPasswordProps } from "../types";
 import { asyncHandler } from "../utils/asyncHandler";
-import { createUserService, signinByEmailService } from "../services/user.service";
+import { createUserService, resetPasswordService, signinByEmailService } from "../services/user.service";
 import { ApiResponse } from "../utils/ApiResponse";
 
 /**
@@ -24,8 +24,7 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
     return res.status(201).json(
         new ApiResponse(201, userResponse, "User created successfully")
     );
-}
-);
+});
 
 /**
  * Signin user by email
@@ -54,5 +53,31 @@ export const signinUser = asyncHandler(async (req: Request, res: Response) => {
             "User signed in successfully"
         )
     );
-}
-);
+});
+
+/**
+ * Reset user password
+ * PATCH /api/v1/auth/reset-password
+ */
+export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+    const resetPasswordData: ResetPasswordProps = {
+        userId: req.user!.userId,
+        oldPassword: req.body.oldPassword,
+        newPassword: req.body.newPassword,
+        confirmPassword: req.body.confirmPassword,
+    };
+
+    const user = await resetPasswordService(resetPasswordData);
+
+    const userResponse = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        userRole: user.userRole,
+        userStatus: user.userStatus,
+    };
+
+    return res.status(200).json(
+        new ApiResponse(200, userResponse, "Password reset successfully")
+    );
+});

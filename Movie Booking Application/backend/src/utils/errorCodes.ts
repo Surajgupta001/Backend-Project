@@ -41,6 +41,10 @@ export const ErrorCode = {
     TOKEN_REQUIRED: "TOKEN_REQUIRED",
     INVALID_TOKEN: "INVALID_TOKEN",
     TOKEN_EXPIRED: "TOKEN_EXPIRED",
+
+    // --- Password Reset ───────────────
+    SAME_PASSWORD: "SAME_PASSWORD",
+    INVALID_CONFIRM_PASSWORD: "INVALID_CONFIRM_PASSWORD",
 } as const;
 
 export type ErrorCodeType = (typeof ErrorCode)[keyof typeof ErrorCode];
