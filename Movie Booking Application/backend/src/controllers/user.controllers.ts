@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import type { AuthAdminProps, ResetPasswordProps } from "../types";
+import type { AuthAdminProps, ResetPasswordProps, UpdateUserRoleStatusProps } from "../types";
 import { asyncHandler } from "../utils/asyncHandler";
-import { createUserService, resetPasswordService, signinByEmailService } from "../services/user.service";
+import { createUserService, resetPasswordService, signinByEmailService, updateUserRoleOrStatusService } from "../services/user.service";
 import { ApiResponse } from "../utils/ApiResponse";
 
 /**
@@ -81,3 +81,26 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
         new ApiResponse(200, userResponse, "Password reset successfully")
     );
 });
+
+/**
+ * Update user role or status
+ * PATCH /api/v1/auth/:id
+ */
+export const updateUserRoleOrStatus = asyncHandler(async (req: Request, res: Response) => {
+    const userData: UpdateUserRoleStatusProps = {
+        userId: req.params.id as string,
+        userRole: req.body.userRole,
+        userStatus: req.body.userStatus,
+    };
+
+    const user = await updateUserRoleOrStatusService(userData);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            user,
+            "User updated successfully"
+        )
+    );
+}
+);
