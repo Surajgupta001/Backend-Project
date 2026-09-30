@@ -45,3 +45,8 @@ export interface ResetPasswordProps {
     newPassword: string;
     confirmPassword: string;
 }
+export interface UpdateUserRoleStatusProps {
+    userId: string;
+    userRole?: UserRole;
+    userStatus?: UserStatus;
+}
